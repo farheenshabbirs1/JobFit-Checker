@@ -1,0 +1,21 @@
+# Java / Maven
+target/
+*.class
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+
+# Terraform
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+infra/terraform/.terraform.lock.hcl
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store

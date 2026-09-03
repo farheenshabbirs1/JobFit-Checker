@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.farheenshaikh.jobfit</groupId>
+    <artifactId>jobfit-checker</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>JobFit Checker</name>
+    <description>
+        AI-driven job qualification and skill-improvement suggestions, built as three
+        independently deployable Spring Boot microservices around an event-driven,
+        multi-stage resume pipeline: api-service accepts uploads, parsing-service extracts
+        structured resume data, analysis-service scores fit against a job posting. Services
+        are decoupled by a Postgres-backed transactional outbox (SELECT ... FOR UPDATE SKIP
+        LOCKED) instead of a cloud message queue, so the whole thing runs on nothing but a
+        JDK, Postgres, and Node -- no cloud account required.
+    </description>
+
+    <modules>
+        <module>common</module>
+        <module>api-service</module>
+        <module>parsing-service</module>
+        <module>analysis-service</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-boot.version>3.2.5</spring-boot.version>
+        <pdfbox.version>3.0.2</pdfbox.version>
+        <jackson.version>2.17.0</jackson.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

@@ -1,0 +1,74 @@
+# In-cluster Postgres for demo/reference purposes -- a real deployment should point
+# JOBFIT_DB_URL at a managed instance (Azure Database for PostgreSQL) instead. See
+# infra/terraform/README.md.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data
+  namespace: jobfit-checker
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-schema
+  namespace: jobfit-checker
+data:
+  # Populated from db/schema.sql at manifest-generation time in a real pipeline (e.g. via
+  # `kubectl create configmap postgres-schema --from-file=../../db/schema.sql`); left as a
+  # placeholder reference here rather than duplicating the file.
+  schema.sql: |
+    -- see db/schema.sql at the repo root
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: jobfit-checker
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: postgres }
+  template:
+    metadata:
+      labels: { app: postgres }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          env:
+            - name: POSTGRES_DB
+              value: jobfit
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef: { name: jobfit-db-credentials, key: JOBFIT_DB_USER }
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: jobfit-db-credentials, key: JOBFIT_DB_PASSWORD }
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+            - name: schema
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: data
+          persistentVolumeClaim: { claimName: postgres-data }
+        - name: schema
+          configMap: { name: postgres-schema }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: jobfit-checker
+spec:
+  selector: { app: postgres }
+  ports:
+    - port: 5432
+      targetPort: 5432

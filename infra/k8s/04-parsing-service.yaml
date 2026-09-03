@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parsing-service
+  namespace: jobfit-checker
+spec:
+  # "independent horizontal scaling": bump this without touching api-service or
+  # analysis-service -- each instance safely competes for outbox rows via
+  # SELECT ... FOR UPDATE SKIP LOCKED, no coordination needed beyond the database.
+  replicas: 2
+  selector:
+    matchLabels: { app: parsing-service }
+  template:
+    metadata:
+      labels: { app: parsing-service }
+    spec:
+      containers:
+        - name: parsing-service
+          image: ${ACR_LOGIN_SERVER}/jobfit-parsing-service:${IMAGE_TAG}
+          ports:
+            - containerPort: 8082
+          envFrom:
+            - configMapRef: { name: jobfit-config }
+            - secretRef: { name: jobfit-db-credentials }
+          volumeMounts:
+            - name: resumes
+              mountPath: /var/jobfit/resumes
+          readinessProbe:
+            httpGet: { path: /actuator/health/readiness, port: 8082 }
+            initialDelaySeconds: 15
+          livenessProbe:
+            httpGet: { path: /actuator/health/liveness, port: 8082 }
+            initialDelaySeconds: 30
+      volumes:
+        - name: resumes
+          persistentVolumeClaim: { claimName: resumes-storage }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: parsing-service
+  namespace: jobfit-checker
+spec:
+  selector: { app: parsing-service }
+  ports:
+    - port: 8082
+      targetPort: 8082

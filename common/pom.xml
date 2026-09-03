@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.farheenshaikh.jobfit</groupId>
+        <artifactId>jobfit-checker</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>jobfit-common</artifactId>
+    <packaging>jar</packaging>
+    <name>JobFit Checker - Common</name>
+    <description>
+        Shared JPA entities/repositories and the two cross-cutting abstractions every service
+        depends on: the transactional-outbox event bus (event/) and pluggable blob storage
+        (storage/). A shared module is a deliberate simplification for this project's scope --
+        see the README for the database-per-service alternative a larger system would use.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

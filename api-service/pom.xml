@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.farheenshaikh.jobfit</groupId>
+        <artifactId>jobfit-checker</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>api-service</artifactId>
+    <packaging>jar</packaging>
+    <name>JobFit Checker - api-service</name>
+    <description>
+        The only service the React frontend talks to: job postings CRUD, resume upload (writes
+        the file to BlobStorage, a Resume row, and a resume.uploaded outbox event, all in one
+        transaction), and read endpoints for a resume's pipeline status and final analysis.
+        Does no parsing or scoring itself -- that's parsing-service and analysis-service's job,
+        picked up asynchronously off the outbox.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.farheenshaikh.jobfit</groupId>
+            <artifactId>jobfit-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>api-service</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>

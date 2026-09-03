@@ -1,0 +1,28 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: analysis-service
+  datasource:
+    url: ${JOBFIT_DB_URL:jdbc:postgresql://localhost:5432/jobfit}
+    username: ${JOBFIT_DB_USER:jobfit}
+    password: ${JOBFIT_DB_PASSWORD:jobfit}
+  jpa:
+    hibernate:
+      ddl-auto: validate # the schema is owned by db/schema.sql, not generated here
+    open-in-view: false
+
+jobfit:
+  outbox:
+    poll-interval-ms: ${JOBFIT_POLL_INTERVAL_MS:500}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
